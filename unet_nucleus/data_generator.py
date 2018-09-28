@@ -18,7 +18,7 @@ image_generator = image_datagen.flow(x, seed=seed)
 mask_generator = mask_datagen.flow(y, seed=seed)
 
 def adjustData(img,mask):
-    img = img / 255
+    img = img
     mask = mask / 255
     mask[mask > 0] = 1
     return (img, mask)
