@@ -41,7 +41,9 @@ def adjustData(img,mask,flag_multi_class,num_class):
         mask = mask /255
         mask[mask > 0.5] = 1
         mask[mask <= 0.5] = 0
-    return (img,mask)
+        y = mask.copy()
+        y_flip = np.where(y == 1, 0, 1)
+    return (img,y_flip)
 
 
 

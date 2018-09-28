@@ -89,6 +89,11 @@ def extract_contour_bounding_box_masked(image, contour):
     sub = zzz[y:y2, x:x2]
     return sub
 
+def extract_contour_masked(image, contour):
+    zz = make_binary_mask(contour, (image.shape[0], image.shape[1]))
+    zzz = cv2.bitwise_and(image, image, mask=zz)
+    sub = zzz
+    return sub
 
 def k_means_segments(image):
     h, w, d = image.shape

@@ -16,7 +16,7 @@ from skimage import data, img_as_float
 from skimage.segmentation import (morphological_chan_vese, inverse_gaussian_gradient)
 
 
-a = j('data/image_set_90')
+a = get_training_data_for_image_set('data/image_set_90')
 
 # dat = []
 # for x in a['2015-04-029_20X_C57Bl6_E16.5_LMM.14.24.4.46_SOX9_SFTPC_ACTA2_003.tif']['regions']:
