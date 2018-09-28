@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 x = np.load('data/nucleus/xmat.npy')
 y = np.load('data/nucleus/ymat.npy')
 
+seed = 820
 image_datagen = ImageDataGenerator(
     vertical_flip=True,
     horizontal_flip=True
@@ -13,8 +14,8 @@ mask_datagen = ImageDataGenerator(
     vertical_flip=True,
     horizontal_flip=True
 )
-image_generator = image_datagen.flow(x)
-mask_generator = mask_datagen.flow(y)
+image_generator = image_datagen.flow(x, seed=seed)
+mask_generator = mask_datagen.flow(y, seed=seed)
 
 
 
