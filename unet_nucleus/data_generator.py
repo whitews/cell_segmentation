@@ -17,6 +17,11 @@ mask_datagen = ImageDataGenerator(
 image_generator = image_datagen.flow(x, seed=seed)
 mask_generator = mask_datagen.flow(y, seed=seed)
 
+def adjustData(img,mask):
+    img = img / 255
+    mask = mask / 255
+    mask[mask > 0] = 1
+    return (img, mask)
 
 
 def trainGenerator():
@@ -26,5 +31,6 @@ def trainGenerator():
     if you want to visualize the results of generator, set save_to_dir = "your path"
     '''
     train_generator = zip(image_generator, mask_generator)
-    for (img,mask) in train_generator:
-        yield (img,mask)
+    for (img, mask) in train_generator:
+        img, mask = adjustData(img,mask)
+        yield (img, mask)
