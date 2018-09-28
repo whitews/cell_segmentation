@@ -16,4 +16,14 @@ mask_datagen = ImageDataGenerator(
 image_generator = image_datagen.flow(x)
 mask_generator = mask_datagen.flow(y)
 
-train_generator = zip(image_generator, mask_generator)
+
+
+def trainGenerator():
+    '''
+    can generate image and mask at the same time
+    use the same seed for image_datagen and mask_datagen to ensure the transformation for image and mask is the same
+    if you want to visualize the results of generator, set save_to_dir = "your path"
+    '''
+    train_generator = zip(image_generator, mask_generator)
+    for (img,mask) in train_generator:
+        yield (img,mask)
