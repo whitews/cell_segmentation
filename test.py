@@ -2,7 +2,7 @@ from utils.data import create_generator_from_stash
 from keras.models import load_model
 from classifier.architecture import weighted_categorical_crossentropy
 
-gen = create_generator_from_stash('data/test_numpy', batch_size=200)
+gen = create_generator_from_stash('model_data/test_numpy', batch_size=200)
 x, _ = next(gen)
 
 model = load_model(
@@ -12,7 +12,10 @@ model = load_model(
 
 pred = model.predict(x)
 
-gen = create_generator_from_stash('data/test_numpy', batch_size=400)
+gen = create_generator_from_stash('model_data/test_numpy', batch_size=400)
 x, _ = next(gen)
 
 pred2 = model.predict(x)
+
+# TODO: load the OHE labels and compare the predictions
+
