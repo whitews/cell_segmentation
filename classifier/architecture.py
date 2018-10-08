@@ -3,7 +3,7 @@ from keras.models import Model, load_model
 from keras.applications.xception import Xception
 from utils.data import create_generator_from_stash
 
-gen = create_generator_from_stash('data/train_numpy')
+gen = create_generator_from_stash('model_data/train_numpy')
 
 from keras import backend as K
 

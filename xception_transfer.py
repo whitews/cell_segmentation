@@ -3,7 +3,7 @@ from utils.data import create_generator_from_stash
 import matplotlib.pyplot as plt
 from classifier.architecture import build_model_double, build_model
 
-gen = create_generator_from_stash('data/train_numpy')
+gen = create_generator_from_stash('model_data/train_numpy')
 
 checkpoint = ModelCheckpoint(
     'classifier/model_1.hdf5',
