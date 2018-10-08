@@ -1,4 +1,5 @@
-from utils.data import get_imageset_in_memory, clean_and_stash_numpys, create_generator_from_stash
+from utils.data import get_imageset_in_memory, clean_and_stash_numpys, \
+    create_generator_from_stash
 import matplotlib.pyplot as plt
 
 
@@ -8,7 +9,7 @@ clean_and_stash_numpys(x, y, 'data/train_numpy')
 clean_and_stash_numpys(testx, testy, 'data/test_numpy')
 
 gen = create_generator_from_stash('data/train_numpy')
-x,y = next(gen)
+x, y = next(gen)
 
-plt.imshow(x[0,:,:,:])
+plt.imshow(x[0, :, :, :])
 plt.show()

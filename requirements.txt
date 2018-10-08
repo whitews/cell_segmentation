@@ -1,2 +1,3 @@
+matplotlib
 git+git://github.com/duke-lungmap-team/lung-map-utils-extra.git
 git+git://github.com/duke-lungmap-team/lung-map-utils.git

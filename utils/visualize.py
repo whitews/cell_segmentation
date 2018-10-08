@@ -24,7 +24,6 @@ ROOT_DIR = os.path.abspath("../")
 
 # Import Mask RCNN
 sys.path.append(ROOT_DIR)  # To find local version of the library
-# from mrcnn import utils
 
 
 ############################################################
@@ -129,9 +128,16 @@ def display_instances(image, boxes, masks, class_ids, class_names,
             continue
         y1, x1, y2, x2 = boxes[i]
         if show_bbox:
-            p = patches.Rectangle((x1, y1), x2 - x1, y2 - y1, linewidth=2,
-                                alpha=0.7, linestyle="dashed",
-                                edgecolor=color, facecolor='none')
+            p = patches.Rectangle(
+                (x1, y1),
+                x2 - x1,
+                y2 - y1,
+                linewidth=2,
+                alpha=0.7,
+                linestyle="dashed",
+                edgecolor=color,
+                facecolor='none'
+            )
             ax.add_patch(p)
 
         # Label
@@ -167,11 +173,18 @@ def display_instances(image, boxes, masks, class_ids, class_names,
         plt.show()
 
 
-def display_class_prediction_overlaps(image, segments,
-                      true_regions, test_regions,
-                      figsize=(16, 16), ax=None,
-                      show_mask=True, show_bbox=True,
-                      colors=None, captions=None):
+def display_class_prediction_overlaps(
+        image,
+        segments,
+        true_regions,
+        test_regions,
+        figsize=(16, 16),
+        ax=None,
+        show_mask=True,
+        show_bbox=True,
+        colors=None,
+        captions=None
+):
     """
     boxes: [num_instance, (y1, x1, y2, x2, class_id)] in image coordinates.
     masks: [height, width, num_instances]
@@ -186,7 +199,7 @@ def display_class_prediction_overlaps(image, segments,
     """
     for key, x in segments.items():
         # If no axis is passed, create one and automatically call show()
-        ax=None
+        ax = None
         if not ax:
             _, ax = plt.subplots(1, figsize=figsize)
             auto_show = True
@@ -205,9 +218,10 @@ def display_class_prediction_overlaps(image, segments,
         ax.axis('off')
         ax.set_title(key)
         masked_image = image.astype(np.uint32).copy()
-        for typekey, type in x.items():
+
+        for typekey, type_val in x.items():
             color = colors[color_labels.index(typekey)]
-            for seg in type:
+            for seg in type_val:
                 if 'gt_ind' in list(seg.keys()):
                     contour = true_regions['regions'][seg['gt_ind']]['points']
                     seglabel = 'gt'
@@ -220,9 +234,16 @@ def display_class_prediction_overlaps(image, segments,
 
                 x1, y1, x2, y2 = compute_bbox(contour)
                 if show_bbox:
-                    p = patches.Rectangle((x1, y1), x2 - x1, y2 - y1, linewidth=2,
-                                        alpha=0.7, linestyle="dashed",
-                                        edgecolor=color, facecolor='none')
+                    p = patches.Rectangle(
+                        (x1, y1),
+                        x2 - x1,
+                        y2 - y1,
+                        linewidth=2,
+                        alpha=0.7,
+                        linestyle="dashed",
+                        edgecolor=color,
+                        facecolor='none'
+                    )
                     ax.add_patch(p)
                 ax.text(x1, y1 + 8, seglabel,
                         color='w', size=15, backgroundcolor="none")
@@ -236,11 +257,19 @@ def display_class_prediction_overlaps(image, segments,
             plt.show()
 
 
-def display_instances_segments(image, segments, class_names,
-                      scores=None, title="",
-                      figsize=(16, 16), ax=None,
-                      show_mask=True, show_bbox=True,
-                      colors=None, captions=None):
+def display_instances_segments(
+        image,
+        segments,
+        class_names,
+        scores=None,
+        title="",
+        figsize=(16, 16),
+        ax=None,
+        show_mask=True,
+        show_bbox=True,
+        colors=None,
+        captions=None
+):
     """
     boxes: [num_instance, (y1, x1, y2, x2, class_id)] in image coordinates.
     masks: [height, width, num_instances]
@@ -288,20 +317,32 @@ def display_instances_segments(image, segments, class_names,
         except:
             x1, y1, x2, y2 = compute_bbox(x['points'])
         if show_bbox:
-            p = patches.Rectangle((x1, y1), x2 - x1, y2 - y1, linewidth=2,
-                                alpha=0.7, linestyle="dashed",
-                                edgecolor=color, facecolor='none')
+            p = patches.Rectangle(
+                (x1, y1),
+                x2 - x1,
+                y2 - y1,
+                linewidth=2,
+                alpha=0.7,
+                linestyle="dashed",
+                edgecolor=color,
+                facecolor='none'
+            )
             ax.add_patch(p)
-
 
         ax.text(x1, y1 + 8, caption,
                 color='w', size=11, backgroundcolor="none")
 
         # Mask
         try:
-            mask = make_binary_mask(x['contour'], (masked_image.shape[0], masked_image.shape[1]))
+            mask = make_binary_mask(
+                x['contour'],
+                (masked_image.shape[0], masked_image.shape[1])
+            )
         except:
-            mask = make_binary_mask(x['points'], (masked_image.shape[0], masked_image.shape[1]))
+            mask = make_binary_mask(
+                x['points'],
+                (masked_image.shape[0], masked_image.shape[1])
+            )
         if show_mask:
             masked_image = apply_mask(masked_image, mask, color)
 

@@ -12,12 +12,6 @@ from skimage.segmentation import (morphological_chan_vese, inverse_gaussian_grad
 
 a = get_training_data_for_image_set('data/image_set_90')
 
-# dat = []
-# for x in a['2015-04-029_20X_C57Bl6_E16.5_LMM.14.24.4.46_SOX9_SFTPC_ACTA2_003.tif']['regions']:
-#     print(x['label'])
-#     if x['label']=='distal acinar tubule bud':
-#         dat.append(x)
-
 full_image = cv2.cvtColor(
         a['2015-04-029_60X_C57Bl6_E16.5_LMM.14.24.4.46_SOX9_SFTPC_ACTA2_003.tif']['hsv_img'],
         cv2.COLOR_HSV2RGB

@@ -1,7 +1,7 @@
 from keras.callbacks import ModelCheckpoint
 from utils.data import create_generator_from_stash
 import matplotlib.pyplot as plt
-from classifier.architecture import build_model_double, build_model, build_model_scratch
+from classifier.architecture import build_model_double, build_model_scratch
 
 gen = create_generator_from_stash('data/train_numpy')
 
@@ -58,12 +58,14 @@ h2 = model.fit_generator(
     epochs=10,
     callbacks=[checkpoint2]
 )
+
 plt.plot(h2.history['acc'])
 plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
 plt.show()
+
 # summarize history for loss
 plt.plot(h2.history['loss'])
 plt.title('model loss')
