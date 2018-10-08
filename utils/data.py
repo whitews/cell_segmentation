@@ -10,8 +10,6 @@ from operator import itemgetter
 import numpy as np
 from random import randint
 
-from skimage.segmentation import slic
-from skimage.segmentation import mark_boundaries
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 
 from keras.preprocessing.image import ImageDataGenerator
@@ -65,19 +63,24 @@ def clean_and_stash_numpys(
     print('Numpys stashed!')
 
 
-def get_imageset_in_memory(image_set_directory):
+def get_imageset_in_memory(
+        image_set_directory,
+        test_image_name,
+        balance_train=True,
+        balance_test=False
+):
     """
-    Takes a directory where a lung map data extract live and
-    return two numpy arrays
+    Takes an image set directory and a test image file name.
+    Returns 4 numpy arrays: train_regions, train_labels, test_regions, test_labels
     """
     image_set_metadata = get_training_data_for_image_set(image_set_directory)
-    test_metadata = image_set_metadata.pop(
-        '2015-04-029_20X_C57Bl6_E16.5_LMM.14.24.4.46_SOX9_SFTPC_ACTA2_001.tif'
-    )
-    images = []
-    labels = []
+    test_metadata = image_set_metadata.pop(test_image_name)
+
+    images_train = []
+    labels_train = []
     images_test = []
     labels_test = []
+
     for key, value in image_set_metadata.items():
         hsv_img = value['hsv_img']
         rgb_img = cv2.cvtColor(
@@ -85,8 +88,8 @@ def get_imageset_in_memory(image_set_directory):
             cv2.COLOR_HSV2RGB
         )
         for region in value['regions']:
-            labels.append(region['label'])
-            images.append(
+            labels_train.append(region['label'])
+            images_train.append(
                 extract_contour_bounding_box(rgb_img, region['points'])
             )
 
@@ -100,10 +103,12 @@ def get_imageset_in_memory(image_set_directory):
         images_test.append(
             extract_contour_bounding_box(rgb_img, region['points'])
         )
-    xbal, ybal = make_balanced(images, labels)
-    xtestbal, ytestbal = make_balanced(images_test, labels_test)
-    assert len(images) == len(labels)
-    return xbal, ybal, xtestbal, ytestbal
+    if balance_train:
+        images_train, labels_train = make_balanced(images_train, labels_train)
+    if balance_test:
+        images_test, labels_test = make_balanced(images_test, labels_test)
+    assert len(images_train) == len(labels_train)
+    return images_train, labels_train, images_test, labels_test
 
 
 def make_balanced(xarray, ylist):
