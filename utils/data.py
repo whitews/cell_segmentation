@@ -5,6 +5,7 @@ import cv2
 from operator import itemgetter
 import numpy as np
 import matplotlib.pyplot as plt
+from random import randint
 
 from skimage.segmentation import felzenszwalb, slic, quickshift, random_walker
 from skimage.segmentation import mark_boundaries
@@ -13,6 +14,93 @@ from skimage.segmentation import (morphological_chan_vese,
                                   morphological_geodesic_active_contour,
                                   inverse_gaussian_gradient,
                                   checkerboard_level_set)
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+
+from keras.preprocessing.image import ImageDataGenerator
+import skimage.transform as trans
+from keras.applications.xception import Xception, preprocess_input
+from collections import Counter
+import itertools
+
+def create_generator_from_stash(stash_dir, batch_size=12, demo_gen=False):
+    x = np.load(os.path.join(stash_dir, 'images.npy'))
+    y = np.load(os.path.join(stash_dir, 'ohelabels.npy'))
+    image_datagen = ImageDataGenerator(
+        horizontal_flip=True,
+        vertical_flip=True,
+        # preprocessing_function=preprocess_input
+    )
+    if demo_gen==True:
+        index = randint(0,x.shape[1])
+        x = np.expand_dims(x[index,:], axis=0)
+        y = np.expand_dims(y[index,:], axis=0)
+    image_datagen.fit(x)
+    return image_datagen.flow(x, y, batch_size=batch_size)
+
+
+def clean_and_stash_numpys(imglist, strlist, numpy_save_dir, imgshape=(299,299,3)):
+    """Take a list of numpy arrays and a list of text and return one generator"""
+    new_mask = np.zeros((len(imglist),) +imgshape)
+    for i, si in enumerate(imglist):
+        img = trans.resize(si, (imgshape))
+        new_mask[i,:,:,:] = img
+    le = LabelEncoder()
+    strlist_le = le.fit_transform(strlist)
+    ohe = OneHotEncoder(sparse=False)
+    strlist_ohe = ohe.fit_transform(strlist_le.reshape(-1,1))
+    ohe_meta = np.column_stack((ohe.categories_[0], le.classes_))
+    np.savetxt(os.path.join(numpy_save_dir, 'ohemeta.txt'), ohe_meta, delimiter=" ", fmt="%s")
+    np.save(os.path.join(numpy_save_dir, 'images.npy'), new_mask)
+    np.save(os.path.join(numpy_save_dir, 'ohelabels.npy'), strlist_ohe)
+    print('Numpys stashed!')
+
+
+
+def get_imageset_in_memory(image_set_directory):
+    """Takes a directory where a lungmap data extract live and return two numpy arrays"""
+    image_set_metadata = get_training_data_for_image_set(image_set_directory)
+    test_metadata = image_set_metadata.pop('2015-04-029_20X_C57Bl6_E16.5_LMM.14.24.4.46_SOX9_SFTPC_ACTA2_001.tif')
+    images = []
+    labels = []
+    images_test = []
+    labels_test = []
+    for key, value in image_set_metadata.items():
+        hsv_img = value['hsv_img']
+        rgb_img = cv2.cvtColor(
+            hsv_img,
+            cv2.COLOR_HSV2RGB
+        )
+        for region in value['regions']:
+            labels.append(region['label'])
+            images.append(extract_contour_bounding_box(rgb_img, region['points']))
+
+    hsv_img = test_metadata['hsv_img']
+    rgb_img = cv2.cvtColor(
+        hsv_img,
+        cv2.COLOR_HSV2RGB
+    )
+    for region in test_metadata['regions']:
+        labels_test.append(region['label'])
+        images_test.append(extract_contour_bounding_box(rgb_img, region['points']))
+    xbal, ybal = make_balanced(images, labels)
+    xtestbal, ytestbal = make_balanced(images_test, labels_test)
+    assert len(images) == len(labels)
+    return xbal, ybal, xtestbal, ytestbal
+
+def make_balanced(xarray, ylist):
+    counts = Counter(ylist)
+    bringup = np.max(list(counts.values()))
+    bringupdict = {key: bringup//value for key, value in counts.items()}
+    newx = []
+    newy = []
+    for x in set(ylist):
+        indices = [i for i,val in enumerate(ylist) if val==x]
+        newindices = list(itertools.repeat(indices, bringupdict[x]))
+        newindicesflat = [item for sublist in newindices for item in sublist]
+        for index in newindicesflat:
+            newx.append(xarray[index])
+            newy.append(ylist[index])
+    return newx, newy
 
 
 def get_training_data_for_image_set(image_set_dir):
