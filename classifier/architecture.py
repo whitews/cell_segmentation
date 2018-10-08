@@ -56,7 +56,7 @@ def build_model():
     return m
 
 def build_model_scratch():
-    base_model = Xception(weights='imagenet', include_top=False, input_shape=(299, 299, 3))
+    base_model = Xception(weights=None, include_top=False, input_shape=(299, 299, 3))
     x = base_model.output
     x = GlobalAveragePooling2D()(x)
     x = Dense(128, activation='relu')(x)
