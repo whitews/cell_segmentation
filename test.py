@@ -6,7 +6,7 @@ gen = create_generator_from_stash('model_data/test_numpy', batch_size=200)
 x, _ = next(gen)
 
 model = load_model(
-    'classifier/model_1.hdf5',
+    'model_data/model_1.hdf5',
     custom_objects={'loss':  weighted_categorical_crossentropy((1, 6, 6, 13, 13))}
 )
 

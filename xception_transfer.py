@@ -6,7 +6,7 @@ from classifier.architecture import build_model_double, build_model
 gen = create_generator_from_stash('model_data/train_numpy')
 
 checkpoint = ModelCheckpoint(
-    'classifier/model_1.hdf5',
+    'model_data/model_1.hdf5',
     monitor='loss',
     verbose=1,
     save_best_only=True,
@@ -40,10 +40,10 @@ plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
 plt.show()
 
-model2 = build_model_double('classifier/model_1.hdf5')
+model2 = build_model_double('model_data/model_1.hdf5')
 
 checkpoint2 = ModelCheckpoint(
-    'classifier/model_2.hdf5',
+    'model_data/model_2.hdf5',
     monitor='acc',
     verbose=1,
     save_best_only=True,
