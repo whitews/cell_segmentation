@@ -1,5 +1,6 @@
 matplotlib
 numpy
+pandas
 scikit-image
 scikit-learn
 tensorflow
