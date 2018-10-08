@@ -1,18 +1,12 @@
 from utils.data import (
     get_training_data_for_image_set,
-    extract_contour_bounding_box,
     extract_contour_bounding_box_masked,
-    watershed_grey,
-    k_means_segments,
-    lungmap_custom,
-    hsv_thresholding,
-    morphological_chan_vese
 )
 import matplotlib.pyplot as plt
 import cv2
 from utils.visualize import display_instances_segments
 from skimage.segmentation import chan_vese, mark_boundaries
-from skimage import data, img_as_float
+from skimage import img_as_float
 from skimage.segmentation import (morphological_chan_vese, inverse_gaussian_gradient)
 
 

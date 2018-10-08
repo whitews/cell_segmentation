@@ -1,18 +1,9 @@
-from keras.layers import Dense, Dropout, GlobalAveragePooling2D
-from keras.models import Model, load_model
-from keras.applications.xception import Xception, preprocess_input
-from keras.preprocessing.image import ImageDataGenerator
-from keras.callbacks import ModelCheckpoint, EarlyStopping
-import argparse
-import numpy as np
+from keras.callbacks import ModelCheckpoint
 from utils.data import create_generator_from_stash
 import matplotlib.pyplot as plt
-from classifier.architecture import build_model_double, build_model, weighted_categorical_crossentropy, build_model_scratch
+from classifier.architecture import build_model_double, build_model, build_model_scratch
 
 gen = create_generator_from_stash('data/train_numpy')
-
-from keras import backend as K
-
 
 checkpoint = ModelCheckpoint(
     'classifier/model_1.hdf5',

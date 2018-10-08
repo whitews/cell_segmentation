@@ -1,4 +1,4 @@
-from utils.data import get_training_data_for_image_set, get_imageset_in_memory, clean_and_stash_numpys, create_generator_from_stash
+from utils.data import get_imageset_in_memory, clean_and_stash_numpys, create_generator_from_stash
 import matplotlib.pyplot as plt
 
 

@@ -4,21 +4,17 @@ from PIL import Image
 import cv2
 from operator import itemgetter
 import numpy as np
-import matplotlib.pyplot as plt
 from random import randint
 
-from skimage.segmentation import felzenszwalb, slic, quickshift, random_walker
+from skimage.segmentation import slic
 from skimage.segmentation import mark_boundaries
 from skimage import data, img_as_float
 from skimage.segmentation import (morphological_chan_vese,
-                                  morphological_geodesic_active_contour,
-                                  inverse_gaussian_gradient,
                                   checkerboard_level_set)
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 
 from keras.preprocessing.image import ImageDataGenerator
 import skimage.transform as trans
-from keras.applications.xception import Xception, preprocess_input
 from collections import Counter
 import itertools
 

@@ -9,18 +9,15 @@ Written by Waleed Abdulla
 
 import os
 import sys
-import logging
 import random
-import itertools
 import colorsys
 from utils.data import compute_bbox, make_binary_mask
 
 import numpy as np
 from skimage.measure import find_contours
 import matplotlib.pyplot as plt
-from matplotlib import patches,  lines
+from matplotlib import patches
 from matplotlib.patches import Polygon
-# import IPython.display
 
 # Root directory of the project
 ROOT_DIR = os.path.abspath("../")

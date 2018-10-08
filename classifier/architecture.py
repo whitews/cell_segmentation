@@ -1,12 +1,7 @@
 from keras.layers import Dense, Dropout, GlobalAveragePooling2D, Flatten
 from keras.models import Model, load_model
-from keras.applications.xception import Xception, preprocess_input
-from keras.preprocessing.image import ImageDataGenerator
-from keras.callbacks import ModelCheckpoint, EarlyStopping
-import argparse
-import numpy as np
+from keras.applications.xception import Xception
 from utils.data import create_generator_from_stash
-import matplotlib.pyplot as plt
 
 gen = create_generator_from_stash('data/train_numpy')
 
