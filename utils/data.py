@@ -51,7 +51,7 @@ def clean_and_stash_numpys(
     strlist_le = le.fit_transform(strlist)
     ohe = OneHotEncoder(sparse=False)
     strlist_ohe = ohe.fit_transform(strlist_le.reshape(-1, 1))
-    ohe_meta = np.column_stack((ohe.categories_[0], le.classes_))
+    ohe_meta = np.column_stack((ohe.categories_[0].astype(np.int), le.classes_))
     np.savetxt(
         os.path.join(numpy_save_dir, 'ohemeta.txt'),
         ohe_meta,
