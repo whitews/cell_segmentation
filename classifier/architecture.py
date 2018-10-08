@@ -37,22 +37,6 @@ def weighted_categorical_crossentropy(weights):
 
 
 def build_model():
-    base_model = Xception(weights='imagenet', include_top=False, input_shape=(299, 299, 3))
-    x = base_model.output
-    x = GlobalAveragePooling2D()(x)
-    x = Dense(128, activation='relu')(x)
-    x = Dropout(0.5)(x)
-    predictions = Dense(5, activation='softmax')(x)
-    m = Model(inputs=base_model.input, outputs=predictions)
-    for layer in base_model.layers:
-        layer.trainable = False
-
-    m.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-
-    return m
-
-
-def build_model_scratch():
     base_model = Xception(weights=None, include_top=False, input_shape=(299, 299, 3))
     x = base_model.output
     x = GlobalAveragePooling2D()(x)

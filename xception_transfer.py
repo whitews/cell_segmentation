@@ -1,7 +1,7 @@
 from keras.callbacks import ModelCheckpoint
 from utils.data import create_generator_from_stash
 import matplotlib.pyplot as plt
-from classifier.architecture import build_model_double, build_model_scratch
+from classifier.architecture import build_model_double, build_model
 
 gen = create_generator_from_stash('data/train_numpy')
 
@@ -15,7 +15,7 @@ checkpoint = ModelCheckpoint(
     period=1
 )
 
-model = build_model_scratch()
+model = build_model()
 
 h = model.fit_generator(
     gen,
