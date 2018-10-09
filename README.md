@@ -12,7 +12,7 @@ allows me to tie the color of the cell to the type of cell segmented.
 
 To run the entire pipeline:
 
-1. Run `data_generatory.py`: This will produce the training and test data in a `model_data` directory.
+1. Run `data_generator.py`: This will produce the training and test data in a `model_data` directory.
 1. Run `xception_transfer.py`: This will train the Xception pipeline, and can take quite a while.
 1. Run `test.py`: This will evaluate the test image for accuracy, saving the results in `results.csv` in the `model_data` directory.
 
