@@ -51,13 +51,14 @@ def clean_and_stash_numpys(
     strlist_le = le.fit_transform(strlist)
     ohe = OneHotEncoder(sparse=False)
     strlist_ohe = ohe.fit_transform(strlist_le.reshape(-1, 1))
-    ohe_meta = np.column_stack((ohe.categories_[0].astype(np.int), le.classes_))
-    np.savetxt(
-        os.path.join(numpy_save_dir, 'ohemeta.txt'),
-        ohe_meta,
-        delimiter=" ",
-        fmt="%s"
-    )
+    ohe_lut = {}
+    for cat in ohe.categories_[0].astype(np.int):
+        ohe_lut[str(cat)] = le.classes_[cat]
+
+    fh = open(os.path.join(numpy_save_dir, 'ohe_meta.json'), 'w')
+    json.dump(ohe_lut, fh, indent=2)
+    fh.close()
+
     np.save(os.path.join(numpy_save_dir, 'images.npy'), new_mask)
     np.save(os.path.join(numpy_save_dir, 'ohelabels.npy'), strlist_ohe)
     print('Numpys stashed!')
