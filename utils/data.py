@@ -68,7 +68,8 @@ def get_imageset_in_memory(
         image_set_directory,
         test_image_name,
         balance_train=True,
-        balance_test=False
+        balance_test=False,
+        masked=False
 ):
     """
     Takes an image set directory and a test image file name.
@@ -90,9 +91,17 @@ def get_imageset_in_memory(
         )
         for region in value['regions']:
             labels_train.append(region['label'])
-            images_train.append(
-                extract_contour_bounding_box(rgb_img, region['points'])
-            )
+            if masked:
+                images_train.append(
+                    extract_contour_bounding_box_masked(
+                        rgb_img,
+                        region['points']
+                    )
+                )
+            else:
+                images_train.append(
+                    extract_contour_bounding_box(rgb_img, region['points'])
+                )
 
     hsv_img = test_metadata['hsv_img']
     rgb_img = cv2.cvtColor(
@@ -101,9 +110,17 @@ def get_imageset_in_memory(
     )
     for region in test_metadata['regions']:
         labels_test.append(region['label'])
-        images_test.append(
-            extract_contour_bounding_box(rgb_img, region['points'])
-        )
+        if masked:
+            images_test.append(
+                extract_contour_bounding_box_masked(
+                    rgb_img,
+                    region['points']
+                )
+            )
+        else:
+            images_test.append(
+                extract_contour_bounding_box(rgb_img, region['points'])
+            )
     if balance_train:
         images_train, labels_train = make_balanced(images_train, labels_train)
     if balance_test:
