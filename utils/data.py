@@ -143,11 +143,9 @@ def get_training_data_for_image_set(image_set_dir):
     training_data = {}
 
     for image_name, sub_regions in regions_json.items():
-        # noinspection PyUnresolvedReferences
         tmp_image = Image.open(os.path.join(image_set_dir, image_name))
         tmp_image = np.asarray(tmp_image)
 
-        # noinspection PyUnresolvedReferences
         tmp_image = cv2.cvtColor(tmp_image, cv2.COLOR_RGB2HSV)
 
         training_data[image_name] = {
@@ -172,7 +170,6 @@ def get_training_data_for_image_set(image_set_dir):
 
 
 def compute_bbox(contour):
-    # noinspection PyUnresolvedReferences
     x1, y1, w, h = cv2.boundingRect(contour)
 
     return [x1, y1, x1 + w, y1 + h]
@@ -180,7 +177,6 @@ def compute_bbox(contour):
 
 def make_binary_mask(contour, img_dims):
     mask = np.zeros(img_dims, dtype=np.uint8)
-    # noinspection PyUnresolvedReferences
     cv2.drawContours(
         mask,
         [contour],
@@ -204,11 +200,4 @@ def extract_contour_bounding_box_masked(image, contour):
     zzz = cv2.bitwise_and(image, image, mask=zz)
     x, y, x2, y2 = compute_bbox(contour)
     sub = zzz[y:y2, x:x2]
-    return sub
-
-
-def extract_contour_masked(image, contour):
-    zz = make_binary_mask(contour, (image.shape[0], image.shape[1]))
-    zzz = cv2.bitwise_and(image, image, mask=zz)
-    sub = zzz
     return sub
