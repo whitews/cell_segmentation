@@ -9,13 +9,25 @@ except ImportError:
 from operator import itemgetter
 import numpy as np
 from random import randint
-
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
-
 from keras.preprocessing.image import ImageDataGenerator
 import skimage.transform as trans
 from collections import Counter
 import itertools
+from lung_map_utils import utils as lm_utils
+
+
+rgb_color_lut = {
+    'white': (255, 255, 255),
+    'red': (223, 7, 7),
+    'gray': (63, 63, 63),
+    'blue': (7, 7, 255),
+    'yellow': (255, 255, 0),
+    'green': (0, 223, 0),
+    'cyan': (0, 255, 255),
+    'violet': (255, 0, 255),
+    'black': (0, 0, 0)
+}
 
 
 def create_generator_from_stash(stash_dir, batch_size=12, demo_gen=False):
@@ -69,7 +81,8 @@ def get_imageset_in_memory(
         test_image_name,
         balance_train=True,
         balance_test=False,
-        masked=False
+        masked=False,
+        pseudo_color=False
 ):
     """
     Takes an image set directory and a test image file name.
@@ -92,16 +105,17 @@ def get_imageset_in_memory(
         for region in value['regions']:
             labels_train.append(region['label'])
             if masked:
-                images_train.append(
-                    extract_contour_bounding_box_masked(
-                        rgb_img,
-                        region['points']
-                    )
+                tmp_img = extract_contour_bounding_box_masked(
+                    rgb_img,
+                    region['points']
                 )
             else:
-                images_train.append(
-                    extract_contour_bounding_box(rgb_img, region['points'])
-                )
+                tmp_img = extract_contour_bounding_box(rgb_img, region['points'])
+
+            if pseudo_color:
+                tmp_img = generate_pseudo_color_image(tmp_img)
+
+            images_train.append(tmp_img)
 
     hsv_img = test_metadata['hsv_img']
     rgb_img = cv2.cvtColor(
@@ -111,16 +125,18 @@ def get_imageset_in_memory(
     for region in test_metadata['regions']:
         labels_test.append(region['label'])
         if masked:
-            images_test.append(
-                extract_contour_bounding_box_masked(
-                    rgb_img,
-                    region['points']
-                )
+            tmp_img = extract_contour_bounding_box_masked(
+                rgb_img,
+                region['points']
             )
         else:
-            images_test.append(
-                extract_contour_bounding_box(rgb_img, region['points'])
-            )
+            tmp_img = extract_contour_bounding_box(rgb_img, region['points'])
+
+        if pseudo_color:
+            tmp_img = generate_pseudo_color_image(tmp_img)
+
+        images_test.append(tmp_img)
+
     if balance_train:
         images_train, labels_train = make_balanced(images_train, labels_train)
     if balance_test:
@@ -218,3 +234,13 @@ def extract_contour_bounding_box_masked(image, contour):
     x, y, x2, y2 = compute_bbox(contour)
     sub = zzz[y:y2, x:x2]
     return sub
+
+
+def generate_pseudo_color_image(rgb_image):
+    pseudo_color_img = np.zeros(rgb_image.shape, dtype=np.uint8)
+    for color, value in rgb_color_lut.items():
+        color_mask = lm_utils.create_mask(cv2.cvtColor(rgb_image, cv2.COLOR_RGB2HSV), [color])
+
+        pseudo_color_img[color_mask > 0] = value
+
+    return pseudo_color_img
