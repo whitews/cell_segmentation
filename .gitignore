@@ -1,5 +1,6 @@
 model_data
 *.hdf5
+*.ods
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,9 +1,10 @@
+xgboost
 matplotlib
 numpy
 pandas
 scikit-image
 scikit-learn
-tensorflow
+tensorflow-gpu
 keras
 Pillow
 opencv-python
